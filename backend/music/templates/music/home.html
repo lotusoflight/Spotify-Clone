@@ -1,0 +1,478 @@
+{% load static %}
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Spotify Clone | Music for Everyone</title>
+
+    <style>
+      :root {
+        --bg: #000;
+        --panel: #121212;
+        --panel-light: #242424;
+        --text: #fff;
+        --muted: #b3b3b3;
+        --green: #1ed760;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        background: var(--bg);
+        color: var(--text);
+        font-family: Arial, Helvetica, sans-serif;
+      }
+
+      a {
+        color: inherit;
+        text-decoration: none;
+      }
+
+      button,
+      input {
+        font: inherit;
+      }
+
+      .app {
+        min-height: 100vh;
+        display: grid;
+        grid-template-columns: 235px minmax(0, 1fr);
+        gap: 8px;
+        padding: 8px;
+      }
+
+      .sidebar {
+        background: var(--bg);
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+      }
+
+      .side-box {
+        background: var(--panel);
+        border-radius: 10px;
+        padding: 22px 18px;
+      }
+
+      .brand {
+        font-size: 24px;
+        font-weight: 800;
+        letter-spacing: -1px;
+        margin-bottom: 24px;
+      }
+
+      .brand span {
+        color: var(--green);
+      }
+
+      .nav-link {
+        display: block;
+        padding: 12px 0;
+        color: var(--muted);
+        font-weight: 700;
+      }
+
+      .nav-link:hover,
+      .nav-link.active {
+        color: var(--text);
+      }
+
+      .library-title {
+        font-weight: 700;
+        color: var(--muted);
+        margin-bottom: 15px;
+      }
+
+      .library-note {
+        color: var(--muted);
+        font-size: 13px;
+        line-height: 1.7;
+      }
+
+      .main {
+        min-width: 0;
+        background: var(--panel);
+        border-radius: 10px;
+        overflow: hidden;
+      }
+
+      .topbar {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        flex-wrap: wrap;
+        gap: 14px;
+        padding: 18px 25px;
+        background: rgba(18, 18, 18, 0.95);
+      }
+
+      .search-form {
+        display: flex;
+        flex: 1;
+        max-width: 540px;
+        gap: 8px;
+      }
+
+      .search-form input {
+        min-width: 0;
+        flex: 1;
+        border: 1px solid #444;
+        border-radius: 30px;
+        padding: 13px 18px;
+        background: #242424;
+        color: white;
+        outline: none;
+      }
+
+      .search-form input:focus {
+        border-color: white;
+      }
+
+      .btn {
+        border: 0;
+        border-radius: 25px;
+        padding: 12px 19px;
+        background: var(--green);
+        color: #000;
+        font-weight: 800;
+        cursor: pointer;
+      }
+
+      .btn:hover {
+        transform: scale(1.03);
+      }
+
+      .profile {
+        color: var(--muted);
+        font-size: 13px;
+      }
+
+      .content {
+        padding: 28px;
+        background: linear-gradient(
+          180deg,
+          #203b2c 0,
+          #17251e 220px,
+          #121212 470px
+        );
+        min-height: calc(100vh - 80px);
+      }
+
+      .eyebrow {
+        color: var(--green);
+        font-weight: 700;
+        font-size: 12px;
+        letter-spacing: 2px;
+        text-transform: uppercase;
+      }
+
+      h1 {
+        font-size: clamp(32px, 5vw, 54px);
+        letter-spacing: -2px;
+        margin: 12px 0;
+      }
+
+      .subtitle {
+        color: #ddd;
+        line-height: 1.7;
+        max-width: 600px;
+      }
+
+      .section-heading {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 10px;
+        margin: 36px 0 18px;
+      }
+
+      .section-heading h2 {
+        font-size: 23px;
+        margin: 0;
+      }
+
+      .muted {
+        color: var(--muted);
+        font-size: 13px;
+      }
+
+      .song-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(165px, 1fr));
+        gap: 16px;
+      }
+
+      .song-card {
+        min-width: 0;
+        background: rgba(255, 255, 255, 0.055);
+        border-radius: 10px;
+        padding: 16px;
+        transition:
+          background 0.2s,
+          transform 0.2s;
+      }
+
+      .song-card:hover {
+        background: #292929;
+        transform: translateY(-3px);
+      }
+
+      .cover {
+        width: 100%;
+        aspect-ratio: 1;
+        display: grid;
+        place-items: center;
+        border-radius: 8px;
+        background: linear-gradient(135deg, #184d35, #1ed760);
+        color: #07140b;
+        font-size: 50px;
+        margin-bottom: 16px;
+      }
+
+      .song-card h3 {
+        font-size: 15px;
+        margin: 0 0 8px;
+        overflow-wrap: anywhere;
+      }
+
+      .song-card p {
+        font-size: 13px;
+        color: var(--muted);
+        line-height: 1.5;
+        margin: 0 0 14px;
+      }
+
+      .play-link {
+        display: inline-block;
+        font-size: 13px;
+        font-weight: 700;
+        color: var(--green);
+      }
+
+      .player-panel {
+        margin-top: 28px;
+        background: #181818;
+        padding: 20px;
+        border: 1px solid #333;
+        border-radius: 12px;
+      }
+
+      .player-panel h2 {
+        margin-top: 0;
+        font-size: 21px;
+      }
+
+      .player-panel iframe {
+        display: block;
+        width: 100%;
+        height: 352px;
+        border: 0;
+        border-radius: 10px;
+      }
+
+      .error {
+        background: #4a1919;
+        color: #ffd7d7;
+        padding: 12px;
+        border-radius: 8px;
+      }
+
+      .footer {
+        color: var(--muted);
+        font-size: 12px;
+        text-align: center;
+        padding: 28px 0 8px;
+      }
+
+      @media (max-width: 760px) {
+        .app {
+          grid-template-columns: 1fr;
+          padding: 0;
+        }
+
+        .sidebar {
+          display: block;
+        }
+
+        .side-box {
+          border-radius: 0;
+          padding: 13px 18px;
+        }
+
+        .brand {
+          margin-bottom: 8px;
+        }
+
+        .nav-row {
+          display: flex;
+          gap: 24px;
+          flex-wrap: wrap;
+        }
+
+        .nav-link {
+          padding: 8px 0;
+        }
+
+        .library-box {
+          display: none;
+        }
+
+        .main {
+          border-radius: 0;
+        }
+
+        .topbar {
+          padding: 15px;
+        }
+
+        .content {
+          padding: 20px 15px;
+        }
+
+        .song-grid {
+          grid-template-columns: repeat(2, minmax(0, 1fr));
+          gap: 10px;
+        }
+
+        .song-card {
+          padding: 12px;
+        }
+
+        .player-panel {
+          padding: 12px;
+        }
+
+        .player-panel iframe {
+          height: 352px;
+        }
+      }
+
+      @media (max-width: 360px) {
+        .search-form {
+          flex-direction: column;
+        }
+
+        .search-form .btn {
+          width: 100%;
+        }
+      }
+    </style>
+  </head>
+
+  <body>
+    <div class="app">
+      <aside class="sidebar">
+        <div class="side-box">
+          <div class="brand">♫ <span>Spotify</span> Clone</div>
+
+          <nav class="nav-row">
+            <a class="nav-link active" href="/">⌂ Home</a>
+            <a class="nav-link" href="#search">⌕ Search</a>
+            <a class="nav-link" href="#library">▤ Your Library</a>
+          </nav>
+        </div>
+
+        <div class="side-box library-box" id="library">
+          <div class="library-title">▤ Your Library</div>
+          <p class="library-note">
+            Discover music, open a Spotify song link, and play it here.
+          </p>
+        </div>
+      </aside>
+
+      <main class="main">
+        <header class="topbar" id="search">
+          <form class="search-form" method="get" action="/">
+            <input
+              type="url"
+              name="url"
+              placeholder="Paste Spotify song or playlist URL"
+              value="{{ spotify_url }}"
+              aria-label="Spotify song or playlist URL"
+              required
+            />
+            <button class="btn" type="submit">Load Music</button>
+          </form>
+
+          <div class="profile">♫ Music for everyone</div>
+        </header>
+
+        <div class="content">
+          <section class="hero">
+            <div class="eyebrow">Your music space</div>
+            <h1>Feel the music.</h1>
+            <p class="subtitle">
+              Explore your favourite tracks and enjoy music with your Spotify
+              Clone. Paste a Spotify link to load the player.
+            </p>
+          </section>
+
+          {% if error_message %}
+          <p class="error">{{ error_message }}</p>
+          {% endif %}
+
+          <section>
+            <div class="section-heading">
+              <h2>Made for your listening</h2>
+              <span class="muted">Featured track</span>
+            </div>
+
+            <div class="song-grid">
+              {% for song in demo_songs %}
+              <article class="song-card">
+                <div class="cover">♫</div>
+                <h3>{{ song.title }}</h3>
+                <p>{{ song.artist }}</p>
+                <a
+                  class="play-link"
+                  href="/?url=https://open.spotify.com/track/{{ song.track_id }}"
+                >
+                  ▶ Play track
+                </a>
+              </article>
+              {% endfor %}
+            </div>
+          </section>
+
+          {% if embed_url %}
+          <section class="player-panel" id="player">
+            <h2>Now playing</h2>
+            <p class="muted">Playback is provided by Spotify.</p>
+
+            <iframe
+              src="{{ embed_url }}"
+              title="Spotify embedded music player"
+              allow="
+                autoplay;
+                clipboard-write;
+                encrypted-media;
+                fullscreen;
+                picture-in-picture;
+              "
+              loading="lazy"
+              allowfullscreen
+            >
+            </iframe>
+          </section>
+          {% else %}
+          <section class="player-panel" id="player">
+            <h2>Open your favourite music</h2>
+            <p class="muted">
+              Paste a Spotify track, album, or playlist link in the search bar
+              above. The embedded player will appear here.
+            </p>
+          </section>
+          {% endif %}
+
+          <footer class="footer">
+            Music playback and content are provided by Spotify.
+          </footer>
+        </div>
+      </main>
+    </div>
+  </body>
+</html>

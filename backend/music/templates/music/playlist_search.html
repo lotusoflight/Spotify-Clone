@@ -1,0 +1,172 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Discover Playlists | Spotify Clone</title>
+    <style>
+      * {
+        box-sizing: border-box;
+      }
+      body {
+        margin: 0;
+        padding: 28px;
+        background: #121212;
+        color: #fff;
+        font-family: Arial, sans-serif;
+      }
+      .container {
+        max-width: 1200px;
+        margin: auto;
+      }
+      h1 {
+        font-size: clamp(28px, 4vw, 42px);
+      }
+      .green {
+        color: #1ed760;
+      }
+      .search {
+        display: flex;
+        gap: 10px;
+        margin: 25px 0;
+      }
+      input {
+        flex: 1;
+        min-width: 0;
+        padding: 14px;
+        border: 1px solid #444;
+        border-radius: 30px;
+        background: #242424;
+        color: white;
+      }
+      button {
+        border: 0;
+        border-radius: 30px;
+        padding: 14px 22px;
+        background: #1ed760;
+        color: #000;
+        font-weight: bold;
+        cursor: pointer;
+      }
+      .grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
+        gap: 18px;
+      }
+      .card {
+        background: #202020;
+        padding: 15px;
+        border-radius: 12px;
+        min-width: 0;
+      }
+      .card img {
+        width: 100%;
+        aspect-ratio: 1;
+        object-fit: cover;
+        border-radius: 8px;
+        background: #333;
+      }
+      .card h3 {
+        overflow-wrap: anywhere;
+      }
+      .description {
+        color: #b3b3b3;
+        font-size: 13px;
+        line-height: 1.5;
+      }
+      .link {
+        display: inline-block;
+        margin: 8px 0;
+        color: #1ed760;
+        font-weight: bold;
+      }
+      .error {
+        padding: 15px;
+        border-radius: 8px;
+        background: #4b2020;
+        color: #ffdada;
+      }
+      .empty {
+        color: #b3b3b3;
+      }
+      @media (max-width: 480px) {
+        body {
+          padding: 16px;
+        }
+        .search {
+          flex-direction: column;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h1>♫ <span class="green">Discover</span> Playlists</h1>
+      <p>Search Spotify playlists by name, artist, or mood.</p>
+
+      <form method="get" action="{% url 'playlist_search' %}" class="search">
+        <input
+          type="search"
+          name="q"
+          placeholder="Try Tamil hits, AR Rahman, melody..."
+          value="{{ query }}"
+          required
+        />
+        <button type="submit">Search</button>
+      </form>
+
+      {% if error_message %}
+      <p class="error">{{ error_message }}</p>
+      {% endif %} {% if query and not error_message %}
+      <h2>Results for "{{ query }}"</h2>
+      {% if not playlists %}
+      <p class="empty">No playlists found for this search.</p>
+      {% endif %} {% endif %}
+
+      <div class="grid">
+        {% for playlist in playlists %}
+        <article class="card">
+          {% if playlist.image %}
+          <img
+            src="{{ playlist.image }}"
+            alt="{{ playlist.name }}"
+            loading="lazy"
+          />
+          {% endif %}
+
+          <h3>{{ playlist.name }}</h3>
+          <p class="description">By {{ playlist.owner }}</p>
+          {% if playlist.description %}
+          <p class="description">{{ playlist.description|striptags }}</p>
+          {% endif %} {% if playlist.url %}
+          <a
+            class="link"
+            href="{{ playlist.url }}"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            Open on Spotify ↗
+          </a>
+          {% endif %} {% if playlist.id %}
+          <iframe
+            title="Play {{ playlist.name }}"
+            src="https://open.spotify.com/embed/playlist/{{ playlist.id }}"
+            width="100%"
+            height="152"
+            style="border: 0; border-radius: 10px"
+            loading="lazy"
+            allow="
+              autoplay;
+              clipboard-write;
+              encrypted-media;
+              fullscreen;
+              picture-in-picture;
+            "
+          ></iframe>
+          {% endif %}
+        </article>
+        {% endfor %}
+      </div>
+    </div>
+  </body>
+</html>

@@ -1,0 +1,126 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Spotify Clone | Music Player</title>
+
+    <style>
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        min-height: 100vh;
+        font-family: Arial, sans-serif;
+        color: white;
+        background: linear-gradient(135deg, #101827, #172033, #064e3b);
+        padding: 30px 16px;
+      }
+
+      .container {
+        width: 100%;
+        max-width: 760px;
+        margin: 45px auto;
+      }
+
+      h1 {
+        color: #1ed760;
+      }
+
+      .card {
+        padding: 25px;
+        background: #1b2735;
+        border-radius: 18px;
+      }
+
+      form {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        margin-bottom: 20px;
+      }
+
+      input {
+        flex: 1;
+        min-width: 200px;
+        padding: 14px;
+        border: 1px solid #475569;
+        border-radius: 8px;
+        background: #0f172a;
+        color: white;
+      }
+
+      button {
+        padding: 14px 20px;
+        border: 0;
+        border-radius: 8px;
+        background: #1ed760;
+        color: #111;
+        font-weight: bold;
+        cursor: pointer;
+      }
+
+      iframe {
+        width: 100%;
+        height: 352px;
+        border: 0;
+        border-radius: 12px;
+      }
+
+      .error {
+        color: #fca5a5;
+      }
+      .hint {
+        color: #cbd5e1;
+        font-size: 14px;
+      }
+    </style>
+  </head>
+
+  <body>
+    <main class="container">
+      <h1>♫ Spotify Clone</h1>
+      <p>Listen to music using Spotify's embedded player.</p>
+
+      <section class="card">
+        <h2>Play your favourite music</h2>
+
+        <form method="get">
+          <input
+            type="url"
+            name="url"
+            placeholder="Paste Spotify song or playlist link"
+            value="{{ spotify_url }}"
+            required
+          />
+          <button type="submit">Load Player</button>
+        </form>
+
+        {% if error_message %}
+        <p class="error">{{ error_message }}</p>
+        {% endif %} {% if embed_url %}
+        <iframe
+          src="{{ embed_url }}"
+          title="Spotify Music Player"
+          allow="
+            autoplay;
+            clipboard-write;
+            encrypted-media;
+            fullscreen;
+            picture-in-picture;
+          "
+          loading="lazy"
+          allowfullscreen
+        >
+        </iframe>
+        {% else %}
+        <p class="hint">
+          Paste a Spotify track or playlist link above to load the player.
+        </p>
+        {% endif %}
+      </section>
+    </main>
+  </body>
+</html>
